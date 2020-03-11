@@ -71,8 +71,13 @@ def main():
 	start = time.time()
 	end = 0
 	config_dict= { 'y_up': 1.0,'y_low':0.5,'x_up':0.8,'x_low':0.2,'std_threshold':2e6,'buffer_size':10}
-	# y_up and y_low are the height thresholds within which the keypoints are mapped to the screen.
-	#ie., keypoints are mapped from a space which is (y_max-y_low)*img_height. If keypoints are outside this region cursor position does not change.
+	"""
+	y_up and y_low are the height thresholds within which the keypoints are mapped to the screen.
+	ie., keypoints are mapped from a space which is (y_max-y_low)*img_height. If keypoints are outside this region cursor position does not change.
+	std_threshold is the threshold for std deviation. If std_deviation is above the threshold (implies hand is moving),
+	the cursor position is the location as detected in the previous image. If stddeviation is below the threshold (hand is static),
+	the cursor position is the moving average of buffer_size previous images.
+	"""
 	prev_cursor_x =[]
 	prev_cursor_y =[]
 	prev_cursor = None
@@ -119,7 +124,6 @@ def main():
 			pyag.moveTo(cursor_x,cursor_y)	
 		else :
 			pyag.moveTo(int(mean[0]),int(mean[1])) 
-		varr.append(var_dist)
 		skeleton_overlay = draw_2d_skeleton(frame, est_pose_uv)
 		cv2.imshow('result',skeleton_overlay)
 		#name=str(i)+'.jpg'
